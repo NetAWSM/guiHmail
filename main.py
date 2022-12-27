@@ -5,9 +5,6 @@ import psycopg2
 
 
 
-
-
-
 def hmailServ():
     #Коннект к базе fnkaud
     connectionFnkaud = psycopg2.connect(
@@ -44,6 +41,7 @@ def hmailServ():
     connectionFcaud.close()      
 
 
+
 win = tk.Tk()
 win.geometry("600x200")
 win.title('hmail')
@@ -57,11 +55,11 @@ btn1.grid(row=2, column=3)
 win.grid_columnconfigure(0, minsize=100)
 win.grid_columnconfigure(1, minsize=100)
 
-
 if __name__ == "__main__":
     win.mainloop()
     #cursor.close()
     print("[INFO] PostgreSQL connection closed")
     
+
 
 
