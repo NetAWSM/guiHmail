@@ -1,43 +1,67 @@
 import tkinter as tk
+from configFnkaud import host, user, password, db_name
+from configFcaud import hostF, userF, passwordF, db_nameF
 import psycopg2
-from config import host, user, password, db_name
 
-def hmail():
+
+
+
+
+
+def hmailServ():
+    #Коннект к базе fnkaud
+    connectionFnkaud = psycopg2.connect(
+    host=host,
+    user=user,
+    password=password,
+    database=db_name
+    )
+    connectionFnkaud.autocommit = True
+
+    #Коннект к базе fcaud
+    connectionFcaud = psycopg2.connect(
+    host=hostF,
+    user=userF,
+    password=passwordF,
+    database=db_nameF
+    )
+    connectionFcaud.autocommit = True
+    mail = name.get()
     try:
-        #Коннект к базе
-        connection = psycopg2.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=db_name
-        )
-        connection.autocommit = True
-        w = True
-        while(w):
-            mail = input("Введите почту: ")
-            if(mail == "exit"):
-                break
-            cursor = connection.cursor()
-            postgres_insert_query = """ INSERT INTO hm_rule_criterias (criteriaruleid, criteriausepredefined, criteriapredefinedfield, criteriaheadername, criteriamatchtype, criteriamatchvalue) VALUES (%s,%s,%s,%s,%s,%s)"""
-            record_to_insert = (1, 1, 2, ' ', 1, mail)
-            cursor.execute(postgres_insert_query, record_to_insert)
-            print ("Почта занесена в правило")
-        
-
+        # Функция для fnkaud
+        if(len(mail) == 0):
+            return
+        cursorFnkaud = connectionFnkaud.cursor()
+        cursorFcaud = connectionFcaud.cursor()
+        postgres_insert_query = """ INSERT INTO hm_rule_criterias (criteriaruleid, criteriausepredefined, criteriapredefinedfield, criteriaheadername, criteriamatchtype, criteriamatchvalue) VALUES (%s,%s,%s,%s,%s,%s)"""
+        record_to_insert = (1, 1, 2, ' ', 1, mail)
+        cursorFnkaud.execute(postgres_insert_query, record_to_insert)
+        cursorFcaud.execute(postgres_insert_query, record_to_insert)
+        print ("Ящик " + mail + " заблокирован на отправку.")
     except Exception as ex:
         print("[INFO] Error while working with PostgreSQL", -ex)
-    finally:
-        if connection:
-            connection.close()
-            #cursor.close()
-            print("[INFO] PostgreSQL connection closed")
+    connectionFnkaud.close()
+    connectionFcaud.close()      
+
 
 win = tk.Tk()
 win.geometry("600x200")
 win.title('hmail')
 
-btn1 = tk.Button(win, text="button", command=hmail)
+name = tk.Entry(win)
+name.grid(row=1, column=3)
 
-btn1.pack()
+btn1 = tk.Button(win, text="Отправить", command=hmailServ)
+btn1.grid(row=2, column=3)
 
-win.mainloop()
+win.grid_columnconfigure(0, minsize=100)
+win.grid_columnconfigure(1, minsize=100)
+
+
+if __name__ == "__main__":
+    win.mainloop()
+    #cursor.close()
+    print("[INFO] PostgreSQL connection closed")
+    
+
+
