@@ -4,7 +4,6 @@ from configFcaud import hostF, userF, passwordF, db_nameF
 import psycopg2
 
 
-
 def hmailServ():
     #Коннект к базе fnkaud
     connectionFnkaud = psycopg2.connect(
@@ -31,7 +30,7 @@ def hmailServ():
         cursorFnkaud = connectionFnkaud.cursor()
         cursorFcaud = connectionFcaud.cursor()
         postgres_insert_query = """ INSERT INTO hm_rule_criterias (criteriaruleid, criteriausepredefined, criteriapredefinedfield, criteriaheadername, criteriamatchtype, criteriamatchvalue) VALUES (%s,%s,%s,%s,%s,%s)"""
-        record_to_insert = (1, 1, 2, ' ', 1, mail)
+        record_to_insert = (4, 1, 2, ' ', 2, mail)
         cursorFnkaud.execute(postgres_insert_query, record_to_insert)
         cursorFcaud.execute(postgres_insert_query, record_to_insert)
         print ("Ящик " + mail + " заблокирован на отправку.")
@@ -39,7 +38,6 @@ def hmailServ():
         print("[INFO] Error while working with PostgreSQL", -ex)
     connectionFnkaud.close()
     connectionFcaud.close()      
-
 
 
 win = tk.Tk()
@@ -55,11 +53,8 @@ btn1.grid(row=2, column=3)
 win.grid_columnconfigure(0, minsize=100)
 win.grid_columnconfigure(1, minsize=100)
 
+
 if __name__ == "__main__":
     win.mainloop()
     #cursor.close()
     print("[INFO] PostgreSQL connection closed")
-    
-
-
-
